@@ -118,13 +118,18 @@ Register Student
 
 <!-- Search -->
 
-<div class="mt-6">
+<div class="mt-6 flex gap-4 items-center">
 
 <input
 id="searchInput"
 type="text"
 placeholder="Search by Student ID or Name..."
-class="w-full border rounded-lg px-4 py-3">
+class="flex-1 border rounded-lg px-4 py-3">
+
+<label class="flex items-center gap-2 cursor-pointer bg-white border rounded-lg px-4 py-3 select-none">
+    <input type="checkbox" id="showDeleted">
+    <span class="text-gray-600">Show Deleted</span>
+</label>
 
 </div>
 
