@@ -2,6 +2,30 @@
 // Student Details System
 // =================================
 
+let editBtn = document.getElementById("editStudentBtn");
+let deleteBtn = document.getElementById("deleteStudentBtn");
+
+// Edit Student
+editBtn.addEventListener("click", function(){
+    let id = localStorage.getItem("selectedStudent");
+    localStorage.setItem("editStudent", id);
+    window.location.href = "students.html";
+});
+
+// Delete Student
+deleteBtn.addEventListener("click", function(){
+    let id = localStorage.getItem("selectedStudent");
+    if(!confirm("Delete this student?")) return;
+    let allStudents = JSON.parse(localStorage.getItem("students")) || [];
+    let student = allStudents.find(s => s.id === id);
+    if(student){
+        student.deleted = true;
+        localStorage.setItem("students", JSON.stringify(allStudents));
+        alert("Student deleted successfully.");
+        window.location.href = "students.html";
+    }
+});
+
 
 
 let students =

@@ -2,6 +2,7 @@
 
 const modal = document.getElementById("studentModal");
 const studentTable = document.getElementById("studentTable");
+const showDeletedCheckbox = document.getElementById("showDeleted");
 
 const studentId = document.getElementById("studentId");
 const studentName = document.getElementById("studentName");
@@ -179,12 +180,12 @@ function saveStudent(){
 
 function displayStudents(){
 
-    const activeStudents=
+    let list = students;
+    if(!showDeletedCheckbox.checked){
+        list = students.filter(s => !s.deleted);
+    }
 
-    students.filter(s=>!s.deleted);
-
-
-    if(activeStudents.length===0){
+    if(list.length===0){
 
         studentTable.innerHTML=
 
@@ -208,11 +209,14 @@ function displayStudents(){
     studentTable.innerHTML="";
 
 
-    activeStudents.forEach(student=>{
+    list.forEach(student=>{
+
+        let isDeleted = student.deleted;
+        let statusColor = isDeleted ? "text-red-400" : "text-green-600";
 
         studentTable.innerHTML+=`
 
-        <tr class="border-b hover:bg-gray-50">
+        <tr class="border-b hover:bg-gray-50 ${isDeleted ? 'bg-red-50 line-through text-gray-400' : ''}">
 
             <td class="px-4 py-3">
 
@@ -240,9 +244,9 @@ function displayStudents(){
 
             <td class="px-4 py-3">
 
-                <span class="text-green-600">
+                <span class="${statusColor}">
 
-                ${student.status}
+                ${isDeleted ? "Deleted" : student.status}
 
                 </span>
 
@@ -251,15 +255,25 @@ function displayStudents(){
             <td class="px-4 py-3">
 
                 <button
-                onclick="viewStudent('${student.id}')"
-                class="text-blue-500">
+                data-action="view"
+                data-id="${student.id}"
+                class="text-blue-500 ${isDeleted ? 'opacity-50' : ''}">
 
                 <i class="fa-solid fa-eye"></i>
 
                 </button>
 
+                ${isDeleted ? `
                 <button
-                onclick="editStudent('${student.id}')"
+                data-action="restore"
+                data-id="${student.id}"
+                class="text-green-500 ml-3 font-bold">
+                <i class="fa-solid fa-rotate-left"></i> Restore
+                </button>
+                ` : `
+                <button
+                data-action="edit"
+                data-id="${student.id}"
                 class="text-green-500 ml-3">
 
                 <i class="fa-solid fa-pen"></i>
@@ -267,12 +281,14 @@ function displayStudents(){
                 </button>
 
                 <button
-                onclick="deleteStudent('${student.id}')"
+                data-action="delete"
+                data-id="${student.id}"
                 class="text-red-500 ml-3">
 
                 <i class="fa-solid fa-trash"></i>
 
                 </button>
+                `}
 
             </td>
 
@@ -351,6 +367,18 @@ function deleteStudent(id){
     }
 }
 
+// ===== Restore Student =====
+
+function restoreStudent(id){
+    if(!confirm("Restore this student?")) return;
+    let student = students.find(s => s.id === id);
+    if(student){
+        student.deleted = false;
+        localStorage.setItem("students", JSON.stringify(students));
+        displayStudents();
+    }
+}
+
 // Override save to handle edit
 saveStudent = function(){
     const id = studentId.value.trim();
@@ -401,38 +429,78 @@ saveStudent = function(){
 
 // ===== Search =====
 
+function renderStudentRow(student){
+    let isDeleted = student.deleted;
+    let statusColor = isDeleted ? "text-red-400" : "text-green-600";
+    return `
+    <tr class="border-b hover:bg-gray-50 ${isDeleted ? 'bg-red-50 line-through text-gray-400' : ''}">
+        <td class="px-4 py-3">${student.id}</td>
+        <td class="px-4 py-3">${student.name}</td>
+        <td class="px-4 py-3">${student.phone}</td>
+        <td class="px-4 py-3">${student.classId}</td>
+        <td class="px-4 py-3"><span class="${statusColor}">${isDeleted ? "Deleted" : student.status}</span></td>
+        <td class="px-4 py-3">
+            <button data-action="view" data-id="${student.id}" class="text-blue-500 ${isDeleted ? 'opacity-50' : ''}"><i class="fa-solid fa-eye"></i></button>
+            ${isDeleted ? `
+            <button data-action="restore" data-id="${student.id}" class="text-green-500 ml-3 font-bold"><i class="fa-solid fa-rotate-left"></i> Restore</button>
+            ` : `
+            <button data-action="edit" data-id="${student.id}" class="text-green-500 ml-3"><i class="fa-solid fa-pen"></i></button>
+            <button data-action="delete" data-id="${student.id}" class="text-red-500 ml-3"><i class="fa-solid fa-trash"></i></button>
+            `}
+        </td>
+    </tr>`;
+}
+
 document.getElementById("searchInput").addEventListener("input", function(){
     let value = this.value.trim().toLowerCase();
+    let list = students;
+    if(!showDeletedCheckbox.checked){
+        list = students.filter(s => !s.deleted);
+    }
     if(!value){
         displayStudents();
         return;
     }
-    let filtered = students.filter(s =>
-        !s.deleted &&
-        (s.id.toLowerCase().includes(value) ||
-         s.name.toLowerCase().includes(value))
+    let filtered = list.filter(s =>
+        s.id.toLowerCase().includes(value) ||
+        s.name.toLowerCase().includes(value)
     );
     studentTable.innerHTML="";
     if(filtered.length===0){
         studentTable.innerHTML=`<tr><td colspan="6" class="text-center p-8 text-gray-500">No students found.</td></tr>`;
         return;
     }
-    filtered.forEach(student=>{
-        studentTable.innerHTML+=`
-        <tr class="border-b hover:bg-gray-50">
-            <td class="px-4 py-3">${student.id}</td>
-            <td class="px-4 py-3">${student.name}</td>
-            <td class="px-4 py-3">${student.phone}</td>
-            <td class="px-4 py-3">${student.classId}</td>
-            <td class="px-4 py-3"><span class="text-green-600">${student.status}</span></td>
-            <td class="px-4 py-3">
-                <button onclick="viewStudent('${student.id}')" class="text-blue-500"><i class="fa-solid fa-eye"></i></button>
-                <button onclick="editStudent('${student.id}')" class="text-green-500 ml-3"><i class="fa-solid fa-pen"></i></button>
-                <button onclick="deleteStudent('${student.id}')" class="text-red-500 ml-3"><i class="fa-solid fa-trash"></i></button>
-            </td>
-        </tr>`;
+    filtered.forEach(s => {
+        studentTable.innerHTML += renderStudentRow(s);
     });
 });
+
+// ===== Show Deleted Toggle =====
+
+showDeletedCheckbox.addEventListener("change", function(){
+    displayStudents();
+});
+
+// ===== Event Delegation for Table Buttons =====
+
+studentTable.addEventListener("click", function(e){
+    let btn = e.target.closest("[data-action]");
+    if(!btn) return;
+    let action = btn.dataset.action;
+    let id = btn.dataset.id;
+    if(action === "view") viewStudent(id);
+    else if(action === "edit") editStudent(id);
+    else if(action === "delete") deleteStudent(id);
+    else if(action === "restore") restoreStudent(id);
+});
+
+// ===== Auto-open edit modal from student-details page =====
+
+let editStudentId = localStorage.getItem("editStudent");
+if(editStudentId){
+    editStudent(editStudentId);
+    localStorage.removeItem("editStudent");
+}
 
 // ===== Initialize =====
 
