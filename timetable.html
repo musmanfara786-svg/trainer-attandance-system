@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Timetable</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+body{
+font-family:Poppins,sans-serif;
+background:#F8FAFC;
+}
+
+.active{
+background:#3B82F6;
+color:white;
+}
+
+.menu:hover{
+background:#BFDBFE;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="ml-64 flex-1 p-8">
+
+<!-- Sidebar -->
+
+<aside class="fixed left-0 top-0 w-64 h-screen bg-white shadow-lg z-50">
+
+<div class="p-6 border-b">
+
+<img src="assets/logo.svg" alt="BQ Trainer System" class="h-10">
+
+</div>
+
+<nav class="mt-5">
+
+<a href="dashboard.html" class="menu flex items-center gap-3 px-6 py-3">
+
+<i class="fa-solid fa-house"></i>
+
+Dashboard
+
+</a>
+
+<a href="timetable.html" class="menu active flex items-center gap-3 px-6 py-3">
+
+<i class="fa-solid fa-calendar"></i>
+
+Timetable
+
+</a>
+
+<a href="classes.html" class="menu flex items-center gap-3 px-6 py-3">
+
+<i class="fa-solid fa-book"></i>
+
+My Classes
+
+</a>
+
+<a href="students.html" class="menu flex items-center gap-3 px-6 py-3">
+
+<i class="fa-solid fa-users"></i>
+
+Students
+
+</a>
+
+<a href="attendance.html" class="menu flex items-center gap-3 px-6 py-3">
+
+<i class="fa-solid fa-clipboard-check"></i>
+
+Attendance
+
+</a>
+
+
+<a href="#" onclick="localStorage.removeItem('currentTrainer');window.location.href='index.html';return false;"
+class="menu flex items-center gap-3 px-6 py-3 text-red-500 hover:bg-red-50">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+</a>
+
+</nav>
+
+</aside>
+
+<main class="flex-1 p-8">
+
+<h1 class="text-3xl font-bold text-blue-500 mb-6">
+
+Manage Timetable
+
+</h1>
+
+<!-- Form -->
+
+<div class="bg-white shadow rounded-xl p-6">
+
+<div class="grid grid-cols-2 gap-4">
+
+<input id="subject" placeholder="Subject Name"
+class="border rounded-lg p-3">
+
+<input id="batch" placeholder="Batch"
+class="border rounded-lg p-3">
+
+<select id="day1" class="border rounded-lg p-3">
+
+<option>Monday</option>
+<option>Tuesday</option>
+<option>Wednesday</option>
+<option>Thursday</option>
+<option>Friday</option>
+
+</select>
+
+<select id="day2" class="border rounded-lg p-3">
+
+<option>Monday</option>
+<option>Tuesday</option>
+<option>Wednesday</option>
+<option>Thursday</option>
+<option>Friday</option>
+
+</select>
+
+<input id="start" type="time"
+class="border rounded-lg p-3">
+
+<input id="end" type="time"
+class="border rounded-lg p-3">
+
+<input id="room" placeholder="Room"
+class="border rounded-lg p-3">
+
+<input id="capacity" type="number"
+placeholder="Capacity"
+class="border rounded-lg p-3">
+
+</div>
+
+<button
+onclick="saveClass()"
+class="mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg">
+
+Save Class
+
+</button>
+
+</div>
+
+<!-- Table -->
+
+<div class="bg-white mt-8 rounded-xl shadow p-6">
+
+<table class="w-full">
+
+<thead>
+
+<tr class="border-b">
+
+<th class="py-3">Subject</th>
+
+<th>Batch</th>
+
+<th>Days</th>
+
+<th>Time</th>
+
+<th>Duration</th>
+
+<th>Room</th>
+
+<th>Capacity</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tableData">
+
+</tbody>
+
+</table>
+
+</div>
+
+</main>
+
+</div>
+
+<script>
+if(!localStorage.getItem("currentTrainer")){
+    window.location.href="index.html";
+}
+</script>
+<script src="js/timetable.js"></script>
+
+</body>
+
+</html>

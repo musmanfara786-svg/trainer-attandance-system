@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Students</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body class="bg-slate-50 font-[Poppins]">
+
+<div class="ml-64 flex-1 p-8">
+
+<!-- Sidebar -->
+
+<aside class="fixed left-0 top-0 w-64 h-screen bg-white shadow-lg z-50">
+
+<div class="p-6 border-b">
+
+<img src="assets/logo.svg" alt="BQ Trainer System" class="h-10">
+
+</div>
+
+<nav class="mt-6">
+
+<a href="dashboard.html"
+class="flex gap-3 items-center px-6 py-3 hover:bg-blue-100">
+
+<i class="fa-solid fa-house"></i>
+
+Dashboard
+
+</a>
+
+<a href="timetable.html"
+class="flex gap-3 items-center px-6 py-3 hover:bg-blue-100">
+
+<i class="fa-solid fa-calendar"></i>
+
+Timetable
+
+</a>
+
+<a href="classes.html"
+class="flex gap-3 items-center px-6 py-3 hover:bg-blue-100">
+
+<i class="fa-solid fa-book"></i>
+
+My Classes
+
+</a>
+
+<a href="students.html"
+class="flex gap-3 items-center px-6 py-3 bg-blue-500 text-white">
+
+<i class="fa-solid fa-users"></i>
+
+Students
+
+</a>
+
+<a href="attendance.html"
+class="flex gap-3 items-center px-6 py-3 hover:bg-blue-100">
+
+<i class="fa-solid fa-check"></i>
+
+Attendance
+
+</a>
+
+
+<a href="#" onclick="localStorage.removeItem('currentTrainer');window.location.href='index.html';return false;"
+class="flex gap-3 items-center px-6 py-3 hover:bg-red-50 text-red-500">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+</a>
+
+</nav>
+
+</aside>
+
+<!-- Main -->
+
+<div class="flex-1 p-8">
+
+<div class="flex justify-between items-center">
+
+<h1 class="text-3xl font-bold text-blue-500">
+
+Students
+
+</h1>
+
+<button
+id="addStudentBtn"
+class="bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-lg">
+
+<i class="fa-solid fa-plus"></i>
+
+Register Student
+
+</button>
+
+</div>
+
+<!-- Search -->
+
+<div class="mt-6">
+
+<input
+id="searchInput"
+type="text"
+placeholder="Search by Student ID or Name..."
+class="w-full border rounded-lg px-4 py-3">
+
+</div>
+
+<!-- Table -->
+
+<div class="bg-white rounded-xl shadow mt-6 overflow-x-auto">
+    <table class="w-full">
+
+<thead class="bg-blue-500 text-white">
+        <tr>
+            <th class="px-4 py-3">Student ID</th>
+            <th class="px-4 py-3">Full Name</th>
+            <th class="px-4 py-3">Phone</th>
+            <th class="px-4 py-3">Class</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3 text-center">Actions</th>
+        </tr>
+    </thead>
+
+<tbody id="studentTable">
+
+<tr>
+
+<td colspan="6"
+class="text-center p-8 text-gray-500">
+
+No students found.
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Modal -->
+
+<div
+id="studentModal"
+class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+
+<div class="bg-white rounded-xl w-[600px] p-8">
+
+<div class="flex justify-between items-center">
+
+<h2
+id="modalTitle"
+class="text-2xl font-bold text-blue-500">
+
+Register Student
+
+</h2>
+
+<button id="closeModal">
+
+<i class="fa-solid fa-xmark text-2xl"></i>
+
+</button>
+
+</div>
+
+<div class="grid grid-cols-2 gap-4 mt-6">
+
+<div>
+
+<label>Student ID *</label>
+
+<input
+id="studentId"
+class="w-full border rounded-lg p-3 mt-1">
+
+</div>
+
+<div>
+
+<label>Full Name *</label>
+
+<input
+id="studentName"
+class="w-full border rounded-lg p-3 mt-1">
+
+</div>
+
+<div>
+
+<label>Phone *</label>
+
+<input
+id="studentPhone"
+class="w-full border rounded-lg p-3 mt-1">
+
+</div>
+
+<div>
+
+<label>Email *</label>
+
+<input
+id="studentEmail"
+type="email"
+class="w-full border rounded-lg p-3 mt-1">
+
+</div>
+
+<div>
+
+<label>Gender</label>
+
+<select
+id="studentGender"
+class="w-full border rounded-lg p-3 mt-1">
+
+<option>Male</option>
+
+<option>Female</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label>Class *</label>
+
+<select
+id="studentClass"
+class="w-full border rounded-lg p-3 mt-1">
+
+<option value="">Select Class</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label>Status</label>
+
+<select
+id="studentStatus"
+class="w-full border rounded-lg p-3 mt-1">
+
+<option>Active</option>
+
+<option>Inactive</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="flex justify-end gap-3 mt-8">
+
+<button
+id="cancelBtn"
+class="bg-gray-300 px-5 py-3 rounded-lg">
+
+Cancel
+
+</button>
+
+<button
+id="saveStudent"
+class="bg-blue-500 text-white px-5 py-3 rounded-lg">
+
+Save Student
+
+</button>
+
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+if(!localStorage.getItem("currentTrainer")){
+    window.location.href="index.html";
+}
+</script>
+<script src="js/students.js"></script>
+
+</body>
+
+</html>

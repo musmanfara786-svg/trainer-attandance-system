@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+
+#historyHeader th,
+#historyBody td{
+
+    white-space: nowrap;
+    text-align:center;
+    vertical-align:middle;
+
+}
+
+
+#historyHeader th:first-child,
+#historyBody td:first-child{
+
+    width:100px;
+
+}
+
+
+#historyHeader th:nth-child(2),
+#historyBody td:nth-child(2){
+
+    width:160px;
+
+}
+
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance | BQ Trainer System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body class="bg-slate-100 font-[Poppins] overflow-hidden">
+
+<div class="flex h-screen">
+
+    <!-- ================= Sidebar ================= -->
+
+    <aside class="fixed left-0 top-0 w-64 h-screen bg-white shadow-lg">
+
+        <div class="p-6 border-b">
+
+            <img src="assets/logo.svg" alt="BQ Trainer System" class="h-10">
+
+            <p class="text-gray-500 text-sm mt-2">
+                Trainer Panel
+            </p>
+
+        </div>
+
+        <nav class="mt-6">
+
+            <a href="dashboard.html"
+            class="flex items-center gap-3 px-6 py-3 hover:bg-sky-50">
+
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+
+            </a>
+
+            <a href="timetable.html"
+            class="flex items-center gap-3 px-6 py-3 hover:bg-sky-50">
+
+                <i class="fa-solid fa-calendar"></i>
+                Timetable
+
+            </a>
+
+            <a href="classes.html"
+            class="flex items-center gap-3 px-6 py-3 hover:bg-sky-50">
+
+                <i class="fa-solid fa-book"></i>
+                My Classes
+
+            </a>
+
+            <a href="students.html"
+            class="flex items-center gap-3 px-6 py-3 hover:bg-sky-50">
+
+                <i class="fa-solid fa-users"></i>
+                Students
+
+            </a>
+
+            <a href="attendance.html"
+            class="flex items-center gap-3 px-6 py-3 bg-sky-100 text-sky-700 font-semibold">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+                Attendance
+
+            </a>
+
+            <a href="#" onclick="localStorage.removeItem('currentTrainer');window.location.href='index.html';return false;"
+            class="flex items-center gap-3 px-6 py-3 hover:bg-red-50 text-red-500">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <!-- ================= Main ================= -->
+
+    <main class="ml-64 flex-1 overflow-y-auto p-8">
+
+        <div class="flex justify-between items-center">
+
+            <div>
+
+                <h1 class="text-3xl font-bold text-sky-700">
+                    Attendance Management
+                </h1>
+
+                <p class="text-gray-500 mt-1">
+                    Today :
+                    <span id="todayDate"></span>
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ================= Selection ================= -->
+
+        <div class="bg-white rounded-xl shadow p-6 mt-8">
+
+            <div class="grid grid-cols-2 gap-6">
+
+                <div>
+
+                    <label class="font-medium">
+                        Select Class
+                    </label>
+
+                    <select
+                    id="classSelect" class="w-full border rounded-lg p-3 mt-2">
+
+                        <option value="">
+                            Select Class
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label class="font-medium">
+                        Attendance Date
+                    </label>
+
+                    <input
+                    type="date"
+                    id="attendanceDate"
+                    class="w-full border rounded-lg p-3 mt-2">
+
+                </div>
+
+            </div>
+
+            <div
+            id="selectedInfo"
+            class="mt-5 text-sky-600 font-semibold">
+
+            </div>
+
+        </div>
+
+        <!-- ================= Summary ================= -->
+
+        <div class="grid grid-cols-3 gap-6 mt-6">
+
+            <div class="bg-green-50 rounded-xl shadow p-5 text-center">
+
+                <p class="text-gray-600">
+                    Present
+                </p>
+
+                <h2
+                id="presentCount"
+                class="text-3xl font-bold text-green-600">
+                    0
+                </h2>
+
+            </div>
+
+            <div class="bg-red-50 rounded-xl shadow p-5 text-center">
+
+                <p class="text-gray-600">
+                    Absent
+                </p>
+
+                <h2
+                id="absentCount"
+                class="text-3xl font-bold text-red-600">
+                    0
+                </h2>
+
+            </div>
+
+            <div class="bg-yellow-50 rounded-xl shadow p-5 text-center">
+
+                <p class="text-gray-600">
+                    Leave
+                </p>
+
+                <h2
+                id="leaveCount"
+                class="text-3xl font-bold text-yellow-600">
+                    0
+                </h2>
+
+            </div>
+
+        </div>
+
+        <!-- ================= Today's Attendance ================= -->
+
+        <div class="bg-white rounded-xl shadow mt-8 p-6">
+
+            <div class="flex justify-between items-center mb-5">
+
+                <h2 class="text-2xl font-bold text-sky-700">
+
+                    Student Attendance
+
+                </h2>
+
+                <button
+                id="saveAttendance"
+                class="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded-lg">
+
+                    Save Attendance
+
+                </button>
+
+            </div>
+
+            <div class="overflow-x-auto">
+
+                <table class="min-w-full border-collapse text-center table-fixed">
+
+                    <thead class="bg-sky-100">
+
+                        <tr>
+
+                            <th class="p-3">
+                                Student ID
+                            </th>
+
+                            <th>
+                                Student Name
+                            </th>
+
+                            <th>
+                                Present
+                            </th>
+
+                            <th>
+                                Absent
+                            </th>
+
+                            <th>
+                                Leave
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="attendanceTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- ================= Monthly History ================= -->
+
+        <div class="bg-white rounded-xl shadow mt-8 p-6">
+
+            <div class="bg-white rounded-xl shadow p-6 mt-8">
+
+
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-2xl font-bold text-sky-700">
+                        Monthly Attendance Register
+                    </h2>
+                    <input type="month" id="historyMonth" class="border rounded-lg p-2">
+                </div>
+
+
+            <div class="overflow-x-auto">
+
+
+             <table class="w-full border-collapse border border-gray-300 text-center">
+
+
+              <thead id="historyHeader" class="bg-sky-100">
+
+            </thead>
+
+
+
+          <tbody id="historyBody">
+
+        </tbody>
+
+
+
+</table>
+
+
+</div>
+
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+if(!localStorage.getItem("currentTrainer")){
+    window.location.href="index.html";
+}
+</script>
+<script src="js/attendance.js?v=123"></script>
+
+</body>
+</html>
